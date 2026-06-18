@@ -20,23 +20,17 @@ def make_matrices(seed: int = 0) -> dict[str, np.ndarray]:
     """
     rng = np.random.default_rng(seed)
 
-    # TODO: create A
-    A = None
-
-    # TODO: create B (int32) in Fortran order. Tip: reshape(..., order="F")
-    B = None
-
-    # TODO: create C
-    C = None
-
-    # TODO: create D using rng.integers(..., dtype=np.uint8)
-    D = None
-
-    # TODO: create E
-    E = None
-
-    # TODO: create F
-    F = None
+    A = np.arange(12, dtype=np.float64).reshape(3, 4)
+    
+    B = np.arange(1, 13, dtype=np.int32).reshape(4, 3, order="F")
+    
+    C = (np.arange(5) + 1j * np.arange(5)).astype(np.complex128)
+    
+    D = rng.integers(0, 256, size=(2, 3, 4), dtype=np.uint8)
+    
+    E = np.linspace(-1, 1, 6, dtype=np.float32)
+    
+    F = np.eye(4, dtype=bool)
 
     return {"A": A, "B": B, "C": C, "D": D, "E": E, "F": F}
 
