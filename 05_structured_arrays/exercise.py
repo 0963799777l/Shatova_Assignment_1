@@ -15,6 +15,7 @@ DTYPE = np.dtype([
     ("label", "U10"),
 ])
 
+
 def build_points() -> np.ndarray:
     """
     Build and return a structured array with dtype DTYPE and shape (6,).
@@ -25,8 +26,18 @@ def build_points() -> np.ndarray:
       y:     [0.0, -0.5, 2.0, 1.0, -2.0, 1.0]
       label: ["A", "B", "A", "C", "B", "A"]
     """
-    # TODO
-    return None
+    # Створюємо структурований масив.
+    # Кожен запис містить поля: id, x, y та label.
+    points = np.array([
+        (10,  0.0,  0.0, "A"),
+        (11,  1.5, -0.5, "B"),
+        (12, -2.0,  2.0, "A"),
+        (13,  3.0,  1.0, "C"),
+        (14,  1.0, -2.0, "B"),
+        (15, -1.0,  1.0, "A"),
+    ], dtype=DTYPE)
+
+    return points
 
 
 def group_centroids(points: np.ndarray) -> dict[str, np.ndarray]:
@@ -37,8 +48,25 @@ def group_centroids(points: np.ndarray) -> dict[str, np.ndarray]:
     - No Python loops over points.
     - You may loop over unique labels.
     """
-    # TODO
-    return None
+    # Знаходимо всі унікальні мітки класів.
+    labels = np.unique(points["label"])
+
+    # Створюємо словник, де ключ — мітка, а значення — центроїд [mean_x, mean_y].
+    centroids = {}
+
+    # Цикл по унікальних мітках дозволений умовою завдання.
+    for label in labels:
+        # Створюємо булеву маску для вибору точок з поточною міткою.
+        mask = points["label"] == label
+
+        # Обчислюємо середнє значення координат x та y для цієї групи.
+        mean_x = points["x"][mask].mean()
+        mean_y = points["y"][mask].mean()
+
+        # Записуємо центроїд у словник.
+        centroids[label] = np.array([mean_x, mean_y])
+
+    return centroids
 
 
 def _tests():
@@ -48,7 +76,7 @@ def _tests():
     assert np.allclose(cent["A"], np.array([-1.0, 1.0]))
     assert np.allclose(cent["B"], np.array([1.25, -1.25]))
     assert np.allclose(cent["C"], np.array([3.0, 1.0]))
-    print("All tests passed ✅")
+    print("All tests passed")
 
 
 if __name__ == "__main__":
