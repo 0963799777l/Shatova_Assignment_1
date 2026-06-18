@@ -7,6 +7,8 @@ Instructions:
 """
 
 from __future__ import annotations
+import numpy as np
+
 
 def as_contiguous_float32(X: np.ndarray) -> np.ndarray:
     """
@@ -16,8 +18,13 @@ def as_contiguous_float32(X: np.ndarray) -> np.ndarray:
     - If X is already float32 and C-contiguous, return it WITHOUT copying.
     - Otherwise, return a copy with dtype float32 and C order.
     """
-    # TODO
-    return None
+    # Перевіряємо, чи масив уже має тип float32 і C-contiguous порядок зберігання.
+    # Якщо так, повертаємо той самий масив без копіювання.
+    if X.dtype == np.float32 and X.flags["C_CONTIGUOUS"]:
+        return X
+
+    # Якщо масив не відповідає вимогам, створюємо C-contiguous копію з типом float32.
+    return np.ascontiguousarray(X, dtype=np.float32)
 
 
 def split_view(X: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -29,8 +36,17 @@ def split_view(X: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     Requirements:
     - A and B must both be VIEWS into X (no copies).
     """
-    # TODO
-    return None, None
+    # Визначаємо кількість стовпців у половині масиву.
+    # Якщо X має форму (N, 2D), то D дорівнює половині кількості стовпців.
+    D = X.shape[1] // 2
+
+    # A — перша половина стовпців.
+    # B — друга половина стовпців.
+    # Зрізи повертають view, тобто представлення вихідного масиву без копіювання.
+    A = X[:, :D]
+    B = X[:, D:]
+
+    return A, B
 
 
 def _tests():
@@ -52,7 +68,7 @@ def _tests():
     B[0, 0] = -456
     assert Z[0, 6] == -456
 
-    print("All tests passed ✅")
+    print("All tests passed")
 
 
 if __name__ == "__main__":
