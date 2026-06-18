@@ -19,8 +19,13 @@ def normalize_rows(X: np.ndarray, eps: float = 1e-12) -> np.ndarray:
     - Use broadcasting (no loops).
     - Avoid division by 0 by adding eps inside the sqrt.
     """
-    # TODO
-    return None
+    # Обчислюємо L2-норму для кожного рядка.
+    # keepdims=True залишає форму (N, 1), щоб далі спрацював broadcasting.
+    norms = np.sqrt(np.sum(X * X, axis=1, keepdims=True) + eps)
+
+    # Ділимо кожен рядок матриці X на його норму.
+    # NumPy автоматично "розтягує" norms до форми X.
+    return X / norms
 
 
 def pairwise_sq_dists(A: np.ndarray, B: np.ndarray) -> np.ndarray:
@@ -34,8 +39,14 @@ def pairwise_sq_dists(A: np.ndarray, B: np.ndarray) -> np.ndarray:
     Requirements:
     - Use broadcasting (no explicit Python loops).
     """
-    # TODO
-    return None
+    # A[:, None, :] перетворює A з форми (N, D) на (N, 1, D).
+    # B[None, :, :] перетворює B з форми (M, D) на (1, M, D).
+    # Завдяки broadcasting отримуємо різниці для всіх пар рядків A і B.
+    diff = A[:, None, :] - B[None, :, :]
+
+    # Підносимо різниці до квадрата і сумуємо по останній осі D.
+    # У результаті отримуємо матрицю відстаней форми (N, M).
+    return np.sum(diff * diff, axis=2)
 
 
 def _tests():
@@ -57,7 +68,7 @@ def _tests():
             D_ref[i, j] = float(np.dot(diff, diff))
     assert np.allclose(D, D_ref)
 
-    print("All tests passed ✅")
+    print("All tests passed")
 
 
 if __name__ == "__main__":
