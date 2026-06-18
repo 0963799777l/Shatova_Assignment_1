@@ -22,16 +22,17 @@ def slice_and_mask(X: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     assert X.shape == (8, 8)
 
-    # TODO: center block view
-    S1 = None
+    # S1: центральний блок 4x4 як view
+    S1 = X[2:6, 2:6]
 
-    # TODO: anti-diagonal: indices (0,7), (1,6), ..., (7,0)
-    S2 = None
+    # S2: побічна діагональ, тобто елементи (0,7), (1,6), ..., (7,0)
+    n = X.shape[0]
+    idx = np.arange(n)
+    S2 = X[idx, n - 1 - idx]
 
-    # TODO: boolean mask for primes.
-    # Tip: compute primality for values up to X.max() using a sieve,
-    # then mask X and sort.
-    S3 = None
+    # S3: прості числа з X через булеву маску
+    is_prime = _is_prime_sieve(int(X.max()))
+    S3 = np.sort(X[is_prime[X]])
 
     return S1, S2, S3
 
@@ -65,7 +66,7 @@ def _tests():
     expected_S3 = np.sort(X[sieve[X]])
     assert np.array_equal(S3, expected_S3)
 
-    print("All tests passed ✅")
+    print("All tests passed")
 
 
 if __name__ == "__main__":
